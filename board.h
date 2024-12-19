@@ -1,6 +1,5 @@
-
-#ifndef _BOARD2_H_
-#define _BOARD2_H_
+#ifndef _BOARD_H_
+#define _BOARD_H_
 
 #include <stdbool.h>
 
@@ -221,10 +220,20 @@ board new_game();
  * @param use_range specifies whether the rule should use the range special rule for killing
  * @return the newly created board
  */
- 
- 
 board new_special_game(bool is_hex, bool use_range);
 
+/**
+ * @brief Makes a deep copy of the game.
+ * @param original_game the game to copy.
+ * @return a new copy fully independent of the original game.
+ */
+board copy_game(board original_game);
+
+/**
+ * @brief Delete the game and frees all associated memory.
+ * @param game the game to destroy.
+ */
+void destroy_game(board game);
 
 /**@}*/
 
@@ -331,4 +340,4 @@ enum return_code move_toward(board game, direction direction);
 enum return_code kill_cell(board game, int line, int column);
 
 /**@}*/
-#endif /*_BOARD2_H_*/
+#endif /*_BOARD_H_*/
