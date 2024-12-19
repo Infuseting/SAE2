@@ -539,25 +539,25 @@ void initial(bool hex, bool portee)
   assert(uses_range(game) == true);
   assert(current_player(game) == NORTH);
   
-  move_toward(game, S);
-  kill_cell(game, 3, 2);
+  assert(move_toward(game, S) == OK);
+  assert(kill_cell(game, 3, 2) == OK);
 
-  move_toward(game, N);
-  kill_cell(game, 3, 3);
+  assert(move_toward(game, N) == OK);
+  assert(kill_cell(game, 3, 3) == OK);
 
-  move_toward(game, SW);
-  kill_cell(game, 3, 4);
+  assert(move_toward(game, SW) == OK);
+  assert(kill_cell(game, 3, 4) == OK);
 
-  move_toward(game, N);
-  kill_cell(game, 4, 0);
+  assert(move_toward(game, N) == OK);
+  assert(kill_cell(game, 4, 0) == OK);
 
-  move_toward(game, E);
-  kill_cell(game, 4, 1);
+  assert(move_toward(game, E) == OK);
+  assert(kill_cell(game, 4, 1) == OK);
 
-  move_toward(game, W);
-  kill_cell(game, 7, 0);
+  assert(move_toward(game, W) == OK);
+  assert(kill_cell(game, 7, 0) == OK);
 
-  move_toward(game, N);
+  assert(move_toward(game, N) == OK);
   
   assert(kill_cell(game, 5, 1) == RULES);
   assert(kill_cell(game, 4, 0) == OUT);
@@ -565,7 +565,7 @@ void initial(bool hex, bool portee)
 
   assert(kill_cell(game, 4, 4) == OK);
 
-  move_toward(game, N);
+  assert(move_toward(game, N) == OK);
   assert(kill_cell(game, 1, 3) == BUSY);
   afficher_plateau(game);
 
