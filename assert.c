@@ -534,40 +534,42 @@ void initial(bool hex, bool portee)
        ASSERTION NORMAL GAME + DISTANCE
 
   */
-  game = new_special_game(false, true);
-  assert(is_hex(game) == false);
-  assert(uses_range(game) == true);
-  assert(current_player(game) == NORTH);
+  if (portee) {
+    game = new_special_game(false, true);
+    assert(is_hex(game) == false);
+    assert(uses_range(game) == true);
+    assert(current_player(game) == NORTH);
+    
+    assert(move_toward(game, S) == OK);
+    assert(kill_cell(game, 3, 2) == OK);
+
+    assert(move_toward(game, N) == OK);
+    assert(kill_cell(game, 3, 3) == OK);
+
+    assert(move_toward(game, SW) == OK);
+    assert(kill_cell(game, 3, 4) == OK);
+
+    assert(move_toward(game, N) == OK);
+    assert(kill_cell(game, 4, 0) == OK);
+
+    assert(move_toward(game, E) == OK);
+    assert(kill_cell(game, 4, 1) == OK);
+
+    assert(move_toward(game, W) == OK);
+    assert(kill_cell(game, 7, 0) == OK);
+
+    assert(move_toward(game, N) == OK);
+    
+    assert(kill_cell(game, 5, 1) == RULES);
+    assert(kill_cell(game, 4, 0) == OUT);
+    assert(kill_cell(game, 4, 3) == RULES);
+
+    assert(kill_cell(game, 4, 4) == OK);
+
+    assert(move_toward(game, N) == OK);
+    assert(kill_cell(game, 1, 3) == BUSY);
+  }
   
-  assert(move_toward(game, S) == OK);
-  assert(kill_cell(game, 3, 2) == OK);
-
-  assert(move_toward(game, N) == OK);
-  assert(kill_cell(game, 3, 3) == OK);
-
-  assert(move_toward(game, SW) == OK);
-  assert(kill_cell(game, 3, 4) == OK);
-
-  assert(move_toward(game, N) == OK);
-  assert(kill_cell(game, 4, 0) == OK);
-
-  assert(move_toward(game, E) == OK);
-  assert(kill_cell(game, 4, 1) == OK);
-
-  assert(move_toward(game, W) == OK);
-  assert(kill_cell(game, 7, 0) == OK);
-
-  assert(move_toward(game, N) == OK);
-  
-  assert(kill_cell(game, 5, 1) == RULES);
-  assert(kill_cell(game, 4, 0) == OUT);
-  assert(kill_cell(game, 4, 3) == RULES);
-
-  assert(kill_cell(game, 4, 4) == OK);
-
-  assert(move_toward(game, N) == OK);
-  assert(kill_cell(game, 1, 3) == BUSY);
-  afficher_plateau(game);
 
   
 
@@ -577,78 +579,211 @@ void initial(bool hex, bool portee)
       ASSERTION HEX GAME
 
   */
+  if (hex) {
+    game = new_special_game(true, false);
+    assert(is_hex(game) == true);
+    assert(uses_range(game) == false);
+    assert(current_player(game) == NORTH);
 
+    for (int i = 0; i < MAX_DIMENSION; i++) {
+      for (int j = 0; j < MAX_DIMENSION; j++) {
+        if (j == HEX_SIDE / 2  && i == 0) {
+          assert(get_content(game, i, j) == NORTH_KING);
+        }
+        else if (j == HEX_SIDE + HEX_SIDE / 2 - 1 && i == MAX_DIMENSION - 1) {
+          assert(get_content(game, i, j) == SOUTH_KING);
+        }
+        else if ((i < HEX_SIDE && j >= MAX_DIMENSION - (HEX_SIDE - i - 1)) || (i > HEX_SIDE - 1 && j <= i - HEX_SIDE) ) {
+          assert(get_content(game, i, j) == KILLED);
+        }
+        else {
+          assert(get_content(game, i, j) == EMPTY);
+        }
+      }
+    
+    }
+
+    assert(move_toward(game, N) == RULES);
+    assert(move_toward(game, S) == RULES);
+
+
+    assert(kill_cell(game, 1, 1) == RULES);
+    assert(move_toward(game, NW) == OUT);
+    assert(move_toward(game, NE) == OUT);
+    assert(move_toward(game, W) == OK);
+    assert(move_toward(game, W) == RULES);
+
+    assert(get_content(game, 0, HEX_SIDE / 2) == EMPTY);
+    assert(get_content(game, 0, HEX_SIDE / 2- 1) == NORTH_KING);
+    
+    assert(kill_cell(game, -10, -10) == OUT);
+    assert(kill_cell(game, 0, HEX_SIDE / 2 - 1) == BUSY);
+    assert(kill_cell(game, MAX_DIMENSION - 1, HEX_SIDE + HEX_SIDE / 2 - 1) == BUSY);
+    assert(kill_cell(game, 1, 0) == OK);
+    assert(get_content(game, 1, 0) == KILLED);
+    assert(current_player(game) == SOUTH);
+    destroy_game(game);
+    game = new_special_game(true, false);
+    user = 0;
+    int x = 1;
+    int y = 0;
+    for (int i = 0; i < 25; i++) {
+      if (y == 4 + (i >= 8 ? 1 : 0) + (i >= 14 ? 1 : 0) + (i >= 21 ? 1 : 0) - (i >= 27 ? 1 : 0) - (i >= 32 ? 1 : 0) - (i >= 36 ? 1 : 0)) {
+        y = 1 + (i >= 21 ? 1 : 0) + (i >= 27 ? 1 : 0) + (i >= 32 ? 1 : 0) + (i >= 36 ? 1 : 0);
+        x++;
+      } else {
+        y++;
+      }
+      
+      if (i < 4) {
+        if (user == 0) {
+          assert(move_toward(game, NW) == OUT);
+          assert(move_toward(game, NE) == OUT);
+          assert(move_toward(game, W) == OK);
+          user = 1;
+        }
+        else {
+          assert(move_toward(game, SE) == OUT);
+          assert(move_toward(game, SW) == OUT);
+          assert(move_toward(game, E) == OK);
+          user = 0;
+        }
+      }
+      else if (i < 12) {
+        if (user == 0) {
+          assert(move_toward(game, NW) == OUT);
+          assert(move_toward(game, W) == OUT);
+          assert(move_toward(game, SW) == OK);
+          user = 1;
+        }
+        else {
+          assert(move_toward(game, E) == OUT);
+          assert(move_toward(game, SE) == OUT);
+          assert(move_toward(game, NE) == OK);
+          user = 0;
+        }
+      }
+      else if (i < 20) {
+        if (user == 0) {
+          assert(move_toward(game, W) == OUT);
+          assert(move_toward(game, SW) == OUT);
+          assert(move_toward(game, SE) == OK);
+          user = 1;
+        }
+        else {
+          assert(move_toward(game, NE) == OUT);
+          assert(move_toward(game, E) == OUT);
+          assert(move_toward(game, NW) == OK);
+          user = 0;
+        }
+      
+      }
+      else if (i < 25) {
+        if (user == 0) {
+          assert(move_toward(game, SW) == OUT);
+          assert(move_toward(game, SE) == OUT);
+          assert(move_toward(game, E) == OK);
+          user = 1;
+        }
+        else {
+          assert(move_toward(game, NE) == OUT);
+          assert(move_toward(game, NW) == OUT);
+          assert(move_toward(game, W) == OK);
+          user = 0;
+        }
+      }
+      assert(kill_cell(game, x, y) == OK);
+    }
+    destroy_game(game);
+  }
   /*
 
        ASSERTION HEX GAME + DISTANCE
 
   */
-}
-void specification(bool hex, bool portee)
-{
-  //VERIFIER L'ORDRE DES OUTPUT 
-  // Assertion qui verifie scrupuleusement les infos de la documentation
+  if (portee && hex) {
+    game = new_special_game(true, true);
+    assert(is_hex(game) == true);
+    assert(uses_range(game) == true);
+    assert(current_player(game) == NORTH);
 
-  /*
+    assert(move_toward(game, SW) == OK);
+    assert(kill_cell(game, 3, 2) == OK);
 
-      ASSERTION NOMRAL GAME
+    assert(move_toward(game, NW) == OK);
+    
+    assert(kill_cell(game, 3, 3) == RULES);
+    assert(kill_cell(game, 4, 3) == OK);
 
-  */
+    assert(move_toward(game, SE) == OK);
+    assert(kill_cell(game, 3, 4) == OK);
 
-  /*
+    assert(move_toward(game, NW) == OK);
+    assert(kill_cell(game, 5, 2) == OK);
 
-       ASSERTION NORMAL GAME + DISTANCE
+    assert(move_toward(game, W) == OK);
+    assert(kill_cell(game, 3, 3) == OK);
+    assert(move_toward(game, NE) == OK);
+    assert(kill_cell(game, 6, 6) == OK);
 
-  */
+    assert(move_toward(game, E) == OK);
+       
+    assert(kill_cell(game, 4, 4) == RULES);
+    assert(kill_cell(game, 4, 2) == RULES);
+    assert(kill_cell(game, 4, 1) == RULES);
+    assert(kill_cell(game, 4, 3) == OUT);
+    assert(kill_cell(game, 3, 1) == OK);
 
-  /*
-
-      ASSERTION HEX GAME
-
-  */
-
-  /*
-
-       ASSERTION HEX GAME + DISTANCE
-
-  */
+    assert(move_toward(game, NE) == OK);
+    assert(kill_cell(game, 1, 3) == RULES);
+    assert(kill_cell(game, 4, 7) == OK);
+    assert(move_toward(game, E) == OK);
+    assert(kill_cell(game, 4, 4) == BUSY);
+    destroy_game(game);
+  }
 }
 void approfondis(bool hex, bool portee)
 {
-  // Assertion qui verifie des ptit bugs qui peuvent etre caché
-
   /*
 
       ASSERTION NOMRAL GAME
 
   */
-
+  
   /*
 
        ASSERTION NORMAL GAME + DISTANCE
 
   */
+  if (portee) {
+
+  }
 
   /*
 
       ASSERTION HEX GAME
 
   */
+  if (hex){
 
+  }
   /*
 
        ASSERTION HEX GAME + DISTANCE
 
   */
+  if (hex && portee) {
+    
+  }
 }
+
+
 
 int main()
 {
   bool hex = true;
   bool portee = true;
-
   initial(hex, portee);
-  specification(hex, portee);
   approfondis(hex, portee);
   return 0;
 }

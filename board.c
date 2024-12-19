@@ -34,6 +34,14 @@ int* find_king_board(board game, player player) {
 
 }
 
+void affiche_tab(int tab[MAX_DIMENSION][MAX_DIMENSION]) {
+    for (int i = 0; i < MAX_DIMENSION; i++) {
+        for (int j = 0; j < MAX_DIMENSION; j++) {
+            printf("%3d ", tab[i][j]);
+        }
+        printf("\n");
+    }
+}
 
 int distance(board game, int x1, int y1, int x2, int y2)
 {
@@ -61,10 +69,12 @@ int distance(board game, int x1, int y1, int x2, int y2)
                     for (int p = -1; p < 2; p++) {
                         for (int q = -1; q < 2; q++) {
                             if (i + p >= 0 && i + p < MAX_DIMENSION && j + q >= 0 && j + q < MAX_DIMENSION) {
-                                if (tab[i + p][j + q] > value) {
-                                    coordinates[count][0] = i + p;
-                                    coordinates[count][1] = j + q;
-                                    count++;
+                                if (!(game->is_hex && ((p == -1 && q == 1) || (p == 1 && q == -1)))) {
+                                    if (tab[i + p][j + q] > value) {
+                                        coordinates[count][0] = i + p;
+                                        coordinates[count][1] = j + q;
+                                        count++;
+                                    }
                                 }
                             }
                         }
@@ -82,6 +92,8 @@ int distance(board game, int x1, int y1, int x2, int y2)
 
         value++;
     }
+    //printf("\n\n\n");
+    //affiche_tab(tab);
     return tab[x2][y2];
 
 }
@@ -187,11 +199,11 @@ player get_winner(board game) {
             for (int j = -1; j < 2; j++) {
                 int* tab = find_king_board(game, game->current);
                 if (tab[0] + i < 0 || tab[0] + i >= MAX_DIMENSION || tab[1] + j < 0 || tab[1] + j >= MAX_DIMENSION) {
-                    printf("Case hors plateau %d %d\n", tab[0] + i, tab[1] + j);
+                    //printf("Case hors plateau %d %d\n", tab[0] + i, tab[1] + j);
                     continue;
                 }
                 if (game->cells[tab[0] + i][tab[1] + j] == EMPTY && !(i == 0 && j == 0) && !(i == -1 && j == 1) && !(i == 1 && j == -1)) {
-                    printf("Case vide %d %d\n", tab[0] + i, tab[1] + j);
+                    //printf("Case vide %d %d\n", tab[0] + i, tab[1] + j);
                     continueGame = false;
                 }
             }
@@ -213,7 +225,7 @@ player get_winner(board game) {
                     continue;
                 }
                 if (game->cells[tab[0] + i][tab[i] + j] == EMPTY ) {
-                    printf("Case vide %d %d\n", tab[0] + i, tab[1] + j);
+                    //printf("Case vide %d %d\n", tab[0] + i, tab[1] + j);
                     continueGame = false;
                 }
             }
@@ -246,7 +258,7 @@ enum return_code move_toward(board game, direction d) {
     }
     int* tab = find_king_board(game, game->current);
     int new_line = tab[0] + line, new_col = tab[1] + column;
-    if (new_line < 0 || new_line >= (game->is_hex ? MAX_DIMENSION : NB_LINES) || new_col < 0 || new_col >= (game->is_hex ? MAX_DIMENSION : NB_COLS)) return OUT;
+    if (new_line < 0 || new_line >= (game->is_hex ? MAX_DIMENSION : NB_LINES) || new_col < 0 || new_col >= (game->is_hex ? MAX_DIMENSION : NB_COLS) || game->cells[new_line][new_col] == KILLED) return OUT;
     if (game->cells[new_line][new_col] != EMPTY) return BUSY;
     game->cells[new_line][new_col] = game->cells[tab[0]][tab[1]];
     game->cells[tab[0]][tab[1]] = EMPTY;
