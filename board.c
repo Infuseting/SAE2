@@ -231,58 +231,27 @@ player get_winner(board game) {
 
 
 enum return_code move_toward(board game, direction d) {
-    if (game->turn == KILL) {
-        return RULES;
-    }
+    if (game->turn == KILL) return RULES;
     int line = 0, column = 0;
-    
-    if (game->is_hex) {
-        switch (d) {
-            case NW: line = -1; column = -1; break;
-            case NE: line = -1; column = 0; break;
-            case N: return RULES;
-            case W: line = 0; column = -1; break;
-            case E: line = 0; column = 1; break;
-            case SW: line = 1; column = 0; break;
-            case S: return RULES;
-            case SE: line = 1; column = 1; break;
-            default: break;
-        }
-    }
-    else {
-        switch (d) {
-            case NW: line = -1; column = -1; break;
-            case N: line = -1; column = 0; break;
-            case NE: line = -1; column = 1; break;
-            case W: line = 0; column = -1; break;
-            case E: line = 0; column = 1; break;
-            case SW: line = 1; column = -1; break;
-            case S: line = 1; column = 0; break;
-            case SE: line = 1; column = 1; break;
-            default: break;
-        }
+    switch (d) {
+        case NW: line = -1; column = -1; break;
+        case NE: line = -1; column = game->is_hex ? 0 : 1; break;
+        case N: if (!game->is_hex) line = -1; else return RULES; break;
+        case W: column = -1; break;
+        case E: column = 1; break;
+        case SW: line = 1; column = game->is_hex ? 0 : -1; break;
+        case S: if (!game->is_hex) line = 1; else return RULES; break;
+        case SE: line = 1; column = 1; break;
+        default: break;
     }
     int* tab = find_king_board(game, game->current);
-    if (game->is_hex) {
-        if (tab[0] + line < 0 || tab[0] + line >= MAX_DIMENSION || tab[1] + column < 0 || tab[1] + column >= MAX_DIMENSION) {
-            return OUT;
-        }
-    }
-    else {
-        if (tab[0] + line < 0 || tab[0] + line >= NB_LINES || tab[1] + column < 0 || tab[1] + column >= NB_COLS) {
-            return OUT;
-        }
-    }
-    if (game->cells[tab[0] + line][tab[1] + column] == EMPTY) {
-        game->cells[tab[0] + line][tab[1] + column] = game->cells[tab[0]][tab[1]];
-        game->cells[tab[0]][tab[1]] = EMPTY;
-        game->turn = KILL;
-        return OK;
-    }
-    if (game->cells[tab[0] + line][tab[1] + column] == NORTH_KING || game->cells[tab[0] + line][tab[1] + column] == SOUTH_KING) {
-        return BUSY;
-    }
-    return BUSY;
+    int new_line = tab[0] + line, new_col = tab[1] + column;
+    if (new_line < 0 || new_line >= (game->is_hex ? MAX_DIMENSION : NB_LINES) || new_col < 0 || new_col >= (game->is_hex ? MAX_DIMENSION : NB_COLS)) return OUT;
+    if (game->cells[new_line][new_col] != EMPTY) return BUSY;
+    game->cells[new_line][new_col] = game->cells[tab[0]][tab[1]];
+    game->cells[tab[0]][tab[1]] = EMPTY;
+    game->turn = KILL;
+    return OK;
 }
 
 enum return_code kill_cell(board game, int line, int column) {
@@ -309,7 +278,7 @@ enum return_code kill_cell(board game, int line, int column) {
     }
     if (game->use_range && distance(game, tab[0], tab[1], line, column) > 3) {
         return RULES;
-    }
+    }    
     game->cells[line][column] = KILLED;
     game->current = (game->current == NORTH) ? SOUTH : NORTH;
     game->turn = MOVE;

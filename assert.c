@@ -527,12 +527,50 @@ void initial(bool hex, bool portee)
     
     kill_cell(game, x, y);
   }
+  destroy_game(game);
 
   /*
 
        ASSERTION NORMAL GAME + DISTANCE
 
   */
+  game = new_special_game(false, true);
+  assert(is_hex(game) == false);
+  assert(uses_range(game) == true);
+  assert(current_player(game) == NORTH);
+  
+  move_toward(game, S);
+  kill_cell(game, 3, 2);
+
+  move_toward(game, N);
+  kill_cell(game, 3, 3);
+
+  move_toward(game, SW);
+  kill_cell(game, 3, 4);
+
+  move_toward(game, N);
+  kill_cell(game, 4, 0);
+
+  move_toward(game, E);
+  kill_cell(game, 4, 1);
+
+  move_toward(game, W);
+  kill_cell(game, 7, 0);
+
+  move_toward(game, N);
+  
+  assert(kill_cell(game, 5, 1) == RULES);
+  assert(kill_cell(game, 4, 0) == OUT);
+  assert(kill_cell(game, 4, 3) == RULES);
+
+  assert(kill_cell(game, 4, 4) == OK);
+
+  move_toward(game, N);
+  assert(kill_cell(game, 1, 3) == BUSY);
+  afficher_plateau(game);
+
+  
+
 
   /*
 
@@ -548,6 +586,7 @@ void initial(bool hex, bool portee)
 }
 void specification(bool hex, bool portee)
 {
+  //VERIFIER L'ORDRE DES OUTPUT 
   // Assertion qui verifie scrupuleusement les infos de la documentation
 
   /*
