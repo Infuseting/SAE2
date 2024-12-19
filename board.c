@@ -34,12 +34,56 @@ int* find_king_board(board game, player player) {
 
 }
 
+
 int distance(board game, int x1, int y1, int x2, int y2)
 {
-    int dx = abs(x1 - x2);
-    int dy = abs(y1 - y2);
-    int distance = (dx > dy) ? dx : dy;
-    return distance;
+    int tab[MAX_DIMENSION][MAX_DIMENSION] = {0};
+    
+    for (int i = 0; i < MAX_DIMENSION; i++) {
+        for (int j = 0; j < MAX_DIMENSION; j++) {
+            if (get_content(game, i, j) == KILLED) {
+                tab[i][j] = -1;
+            } else {
+                tab[i][j] = 10000;
+            }
+        }
+    }
+    tab[x1][y1] = 0;
+    int value = 0;
+    bool evolution = true;
+    while (evolution) {
+        int coordinates[100][2];
+        int count = 0;
+        evolution = false;
+        for (int i = 0; i < MAX_DIMENSION; i++) {
+            for (int j = 0; j < MAX_DIMENSION; j++) {
+                if (tab[i][j] == value ) {
+                    for (int p = -1; p < 2; p++) {
+                        for (int q = -1; q < 2; q++) {
+                            if (i + p >= 0 && i + p < MAX_DIMENSION && j + q >= 0 && j + q < MAX_DIMENSION) {
+                                if (tab[i + p][j + q] > value) {
+                                    coordinates[count][0] = i + p;
+                                    coordinates[count][1] = j + q;
+                                    count++;
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        
+        }
+        for (int i = 0; i < count; i++) {
+            if (tab[coordinates[i][0]][coordinates[i][1]] > value) {
+                tab[coordinates[i][0]][coordinates[i][1]] = value + 1;
+                evolution = true;
+            }
+        }
+
+        value++;
+    }
+    return tab[x2][y2];
+
 }
 board new_game() {
     board game = malloc(sizeof(struct board_s));
@@ -59,8 +103,8 @@ board new_game() {
         }
     }
     
-    game->cells[0][3] = NORTH_KING;
-    game->cells[NB_LINES-1][3] = SOUTH_KING;
+    game->cells[0][NB_COLS / 2] = NORTH_KING;
+    game->cells[NB_LINES-1][NB_COLS / 2 ] = SOUTH_KING;
     return game;
 }
 
@@ -88,8 +132,8 @@ board new_special_game(bool is_hex, bool use_range) {
             }
             
         }
-        game->cells[0][2] = NORTH_KING;
-        game->cells[MAX_DIMENSION-1][6] = SOUTH_KING;
+        game->cells[0][HEX_SIDE / 2  ] = NORTH_KING;
+        game->cells[MAX_DIMENSION-1][(HEX_SIDE - 1) + (HEX_SIDE / 2 )] = SOUTH_KING;
     }
     else {
         game = new_game();
@@ -178,7 +222,7 @@ player get_winner(board game) {
     
     if (continueGame) {
         game->current = (game->current == NORTH) ? SOUTH : NORTH;
-        return game->current == NORTH ? SOUTH : NORTH;
+        return game->current == NORTH ? NORTH : SOUTH;
     }
     else {
         return NO_PLAYER;

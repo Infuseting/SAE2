@@ -1,0 +1,7 @@
+{
+    "files.associations": {
+        "*.embeddedhtml": "html",
+        "board.h": "c",
+        "stdio.h": "c"
+    }
+}
