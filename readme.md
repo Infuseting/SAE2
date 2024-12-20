@@ -1,6 +1,6 @@
 # Compile Assertions files :
 
-```gcc -Wall assert.c board.c board.h board.o board_eleve.c;``` (Only on Linux)
+```gcc -Wall .\assert.c .\board.c .\board.h -o assert.exe ; .\assert.exe```
 
 # Compile my game :
 
