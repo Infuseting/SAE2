@@ -18,7 +18,7 @@ struct board_s {
     actual_turn turn;
 };
 
-int* find_king_board(board game, player player) {
+int* find_king_board_eleve(board game, player player) {
     static int coordinates[2];
     for (int i = 0; i < MAX_DIMENSION; i++) {
         for (int j = 0; j < MAX_DIMENSION; j++) {
@@ -35,7 +35,7 @@ int* find_king_board(board game, player player) {
 
 }
 
-void affiche_tab(int tab[MAX_DIMENSION][MAX_DIMENSION]) {
+void affiche_tab_eleve(int tab[MAX_DIMENSION][MAX_DIMENSION]) {
     for (int i = 0; i < MAX_DIMENSION; i++) {
         for (int j = 0; j < MAX_DIMENSION; j++) {
             printf("%3d ", tab[i][j]);
@@ -44,7 +44,7 @@ void affiche_tab(int tab[MAX_DIMENSION][MAX_DIMENSION]) {
     }
 }
 
-int distance(board game, int x1, int y1, int x2, int y2)
+int distance_eleve(board game, int x1, int y1, int x2, int y2)
 {
     int tab[MAX_DIMENSION][MAX_DIMENSION] = {0};
     
