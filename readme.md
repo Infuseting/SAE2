@@ -11,3 +11,23 @@
 ## On Linux :
 
 ```gcc -Wall .\main.c .\board.c .\board.h -o main.out ; .\main.out```
+
+
+# Things actually check by assertions program :
+
+(✅/❌)
+
+
+| Type | Status |
+| :---: | :---: |
+| Modification des variables | ✅ |
+| New Game | ✅ |
+| New Special Game | ✅ |
+| Copy Game | ✅ |
+| Destroy Game | ❌ |
+| is hex | ❌ |
+| uses_range | ❌ |
+| current_player | ❌ |
+| get content | ❌ |
+| get winner | ❌ |
+| move toward | ❌ |

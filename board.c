@@ -288,7 +288,7 @@ enum return_code kill_cell(board game, int line, int column) {
         ( game->cells[line][column] == SOUTH_KING)) {
         return BUSY;
     }
-    if (game->use_range && distance(game, tab[0], tab[1], line, column) > 3) {
+    if (game->use_range && distance(game, tab[0], tab[1], line, column) > KING_RANGE) {
         return RULES;
     }    
     game->cells[line][column] = KILLED;

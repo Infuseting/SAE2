@@ -1,6 +1,31 @@
 #include <stdio.h>
 #include <assert.h>
+#include <stdlib.h>
+#include <string.h>
 #include "board.h"
+
+bool is_memory_usage_above_1GB() {
+    FILE *file = fopen("/proc/self/status", "r");
+    if (file == NULL) {
+        perror("Impossible d'ouvrir /proc/self/status");
+        return false;
+    }
+
+    char line[256];
+    long memory_kb = 0; // Mémoire en kilooctets
+    while (fgets(line, sizeof(line), file)) {
+        if (strncmp(line, "VmRSS:", 6) == 0) {
+            sscanf(line + 6, "%ld", &memory_kb); // Récupère la valeur de VmRSS en kilooctets
+            break;
+        }
+    }
+
+    fclose(file);
+
+    // Convertir en octets (1 Go = 1 * 1024 * 1024 Ko) et comparer
+    return memory_kb > (1L * 1024 * 1024);
+}
+
 
 void draw_line(int i, int j)
 {
@@ -634,7 +659,6 @@ void initial(bool hex, bool portee)
       } else {
         y++;
       }
-      
       if (i < 4) {
         if (user == 0) {
           assert(move_toward(game, NW) == OUT);
@@ -706,7 +730,7 @@ void initial(bool hex, bool portee)
     assert(is_hex(game) == true);
     assert(uses_range(game) == true);
     assert(current_player(game) == NORTH);
-
+  
     assert(move_toward(game, SW) == OK);
     assert(kill_cell(game, 3, 2) == OK);
 
@@ -729,6 +753,7 @@ void initial(bool hex, bool portee)
     assert(move_toward(game, E) == OK);
        
     assert(kill_cell(game, 4, 4) == RULES);
+    
     assert(kill_cell(game, 4, 2) == RULES);
     assert(kill_cell(game, 4, 1) == RULES);
     assert(kill_cell(game, 4, 3) == OUT);
@@ -749,6 +774,30 @@ void approfondis(bool hex, bool portee)
       ASSERTION NOMRAL GAME
 
   */
+
+  board game = new_game();
+  assert(NB_COLS == 7);
+  assert(NB_LINES == 8);
+  assert(HEX_SIDE == 5);
+  assert(MAX_DIMENSION == 9);
+  assert(NB_PLAYERS == 2);
+  assert(KING_RANGE == 3);
+  assert(MAX_DIMENSION >= NB_COLS);
+  assert(MAX_DIMENSION >= NB_LINES);
+  assert(MAX_DIMENSION >= 2*HEX_SIDE-1);
+  destroy_game(game);
+
+
+  //Check if destroy game work well
+  for (int i = 0; i < 100000000; i++) {
+    board create_game = new_game();
+    destroy_game(create_game);
+  }
+  assert(is_memory_usage_above_1GB() == true);
+  
+
+
+
   
   /*
 
@@ -787,3 +836,5 @@ int main()
   approfondis(hex, portee);
   return 0;
 }
+
+
