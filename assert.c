@@ -1131,7 +1131,23 @@ void approfondis(bool hex, bool portee)
 
   */
   if (portee) {
-
+    int number_game = 1000;
+    for (int i = 0; i < number_game; i++ ) {
+      game = new_special_game(false, true);
+      while (get_winner(game) == NO_PLAYER) {
+        bot_move(game);
+        bot_kill(game);
+        board temp_game_1 = copy_game(game);
+        board temp_game_2 = copy_game_assert(game);
+        enum return_code result = get_winner(temp_game_1);
+        enum return_code result_assert = get_winner_assert(temp_game_2);
+        destroy_game(temp_game_1);
+        destroy_game(temp_game_2);
+        assert(result == result_assert);
+      }
+      afficher_plateau(game);
+      destroy_game(game);
+    }
   }
 
   /*
@@ -1140,7 +1156,23 @@ void approfondis(bool hex, bool portee)
 
   */
   if (hex){
-
+    int number_game = 1000;
+    for (int i = 0; i < number_game; i++ ) {
+      game = new_special_game(true, false);
+      while (get_winner(game) == NO_PLAYER) {
+        bot_move(game);
+        bot_kill(game);
+        board temp_game_1 = copy_game(game);
+        board temp_game_2 = copy_game_assert(game);
+        enum return_code result = get_winner(temp_game_1);
+        enum return_code result_assert = get_winner_assert(temp_game_2);
+        destroy_game(temp_game_1);
+        destroy_game(temp_game_2);
+        assert(result == result_assert);
+      }
+      afficher_plateau(game);
+      destroy_game(game);
+    }
   }
   /*
 
@@ -1148,7 +1180,23 @@ void approfondis(bool hex, bool portee)
 
   */
   if (hex && portee) {
-    
+    int number_game = 1000;
+    for (int i = 0; i < number_game; i++ ) {
+      game = new_special_game(true, true);
+      while (get_winner(game) == NO_PLAYER) {
+        bot_move(game);
+        bot_kill(game);
+        board temp_game_1 = copy_game(game);
+        board temp_game_2 = copy_game_assert(game);
+        enum return_code result = get_winner(temp_game_1);
+        enum return_code result_assert = get_winner_assert(temp_game_2);
+        destroy_game(temp_game_1);
+        destroy_game(temp_game_2);
+        assert(result == result_assert);
+      }
+      afficher_plateau(game);
+      destroy_game(game);
+    }
   }
   //Check if destroy game work well
   for (int i = 0; i < 5000000; i++) {

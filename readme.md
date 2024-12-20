@@ -36,6 +36,6 @@
 | Bot | Statut |
 | :---: | :---: |
 | Base | ✅ |
-| Hex | ❌ |
-| Range | ❌ |
-| Hex + Range | ❌ |
+| Hex | ✅ |
+| Range | ✅ |
+| Hex + Range | ✅ |
