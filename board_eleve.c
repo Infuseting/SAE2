@@ -1,6 +1,7 @@
 #include <stdlib.h>
 #include <stdbool.h>
 #include <stdio.h>
+#include "board_eleve.h"
 #include "board.h"
 
 typedef enum actual_turn_e {
@@ -97,7 +98,7 @@ int distance(board game, int x1, int y1, int x2, int y2)
     return tab[x2][y2];
 
 }
-board new_game() {
+board new_game_eleve() {
     board game = malloc(sizeof(struct board_s));
     game->current = NORTH;
     game->is_hex = false;
@@ -120,7 +121,7 @@ board new_game() {
     return game;
 }
 
-board new_special_game(bool is_hex, bool use_range) {
+board new_special_game_eleve(bool is_hex, bool use_range) {
     board game = malloc(sizeof(struct board_s));
     game->current = NORTH;
     game->is_hex = is_hex;
@@ -154,7 +155,7 @@ board new_special_game(bool is_hex, bool use_range) {
     
     return game;
 }
-board copy_game(board original_game) {
+board copy_game_eleve(board original_game) {
   board new_game_copy = malloc(sizeof(struct board_s));
   if (new_game_copy == NULL) {
     perror("Failed to allocate memory for game copy");
@@ -172,31 +173,30 @@ board copy_game(board original_game) {
   return new_game_copy;
 }
 
-void destroy_game(board game) {
+void destroy_game_eleve(board game) {
     free(game);
 }
 
-bool is_hex(board game) {
+bool is_hex_eleve(board game) {
     return game->is_hex;
 }
 
-bool uses_range(board game) {
+bool uses_range_eleve(board game) {
     return game->use_range;
 }
 
-player current_player(board game) {
+player current_player_eleve(board game) {
     return game->current;
 }
 
-cell get_content(board game, int line, int column) {
+cell get_content_eleve(board game, int line, int column) {
     if (line < 0 || line >= MAX_DIMENSION || column < 0 || column >= MAX_DIMENSION) {
         return KILLED;
     }
     return game->cells[line][column];
 }
 
-// ...existing code...
-player get_winner(board game) {
+player get_winner_eleve(board game) {
     if (game->is_hex) {
         for (int i = -1; i < 2; i++) {
             for (int j = -1; j < 2; j++) {
@@ -226,7 +226,7 @@ player get_winner(board game) {
     return game->current == NORTH ? NORTH : SOUTH;
 }
 
-enum return_code move_toward(board game, direction d) {
+enum return_code move_toward_eleve(board game, direction d) {
     if (game->turn == KILL) return RULES;
     int line = 0, column = 0;
     switch (d) {
@@ -250,7 +250,7 @@ enum return_code move_toward(board game, direction d) {
     return OK;
 }
 
-enum return_code kill_cell(board game, int line, int column) {
+enum return_code kill_cell_eleve(board game, int line, int column) {
     if (game->turn == MOVE) {
         return RULES;
     }

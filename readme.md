@@ -24,10 +24,18 @@
 | New Game | ✅ |
 | New Special Game | ✅ |
 | Copy Game | ✅ |
-| Destroy Game | ❌ |
-| is hex | ❌ |
-| uses_range | ❌ |
-| current_player | ❌ |
-| get content | ❌ |
-| get winner | ❌ |
-| move toward | ❌ |
+| Destroy Game | ✅ (WORK ONLY ON LINUX) |
+| is hex | ✅ |
+| uses_range | ✅ |
+| current_player | ✅ |
+| get content | ✅ |
+| get winner | ✅ |
+| move toward | ✅ |
+
+
+| Bot | Statut |
+| :---: | :---: |
+| Base | ✅ |
+| Hex | ❌ |
+| Range | ❌ |
+| Hex + Range | ❌ |

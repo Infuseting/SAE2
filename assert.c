@@ -3,11 +3,55 @@
 #include <stdlib.h>
 #include <string.h>
 #include "board.h"
+#include "board_eleve.h"
+#include <time.h>
+
+
+typedef enum actual_turn_e {
+    MOVE,
+    KILL
+} actual_turn;  
+
+
+void bot_move(board game) {
+  int directions[] = {NW, NE, N, W, E, SW, S, SE};
+  int num_directions = sizeof(directions) / sizeof(directions[0]);
+  enum return_code result_eleve, result;
+
+  int random_direction = directions[0];
+  do {
+    random_direction = directions[rand() % num_directions];
+    board copy_games = copy_game_eleve(game);
+    board copy_games_2 = copy_game(game);
+    result_eleve = move_toward_eleve(copy_games, random_direction);
+    result = move_toward(copy_games_2, random_direction);
+    assert(result == result_eleve);
+  } while (result != OK);
+  move_toward(game, random_direction);
+  
+}
+
+void bot_kill(board game) {
+  enum return_code result, result_eleve;
+  int random_line = 0;
+  int random_column = 0;
+  do {
+    random_column = rand() % MAX_DIMENSION;
+    random_line = rand() % MAX_DIMENSION;
+    board copy_games = copy_game_eleve(game);
+    board copy_games_2 = copy_game(game);
+    result_eleve = kill_cell_eleve(copy_games, random_line, random_column);
+    result =  kill_cell(copy_games_2, random_line, random_column);
+    assert(result == result_eleve);
+  } while (result != OK);
+  kill_cell(game, random_line, random_column);
+}
+
 
 bool is_memory_usage_above_1GB() {
     FILE *file = fopen("/proc/self/status", "r");
     if (file == NULL) {
-        perror("Impossible d'ouvrir /proc/self/status");
+        perror("Cet partie n'est executable seulement sur Linux !");
         return false;
     }
 
@@ -788,15 +832,35 @@ void approfondis(bool hex, bool portee)
   destroy_game(game);
 
 
-  //Check if destroy game work well
-  for (int i = 0; i < 100000000; i++) {
-    board create_game = new_game();
-    destroy_game(create_game);
-  }
-  assert(is_memory_usage_above_1GB() == true);
   
+  game = new_game();
+  for (int i = -3; i < MAX_DIMENSION + 3; i++) {
+    for (int j = -3; j < MAX_DIMENSION + 3; j++) {
+      if (!(i >= 0 && i < MAX_DIMENSION && j >= 0 && j < MAX_DIMENSION)) {
+        assert(get_content(game, i, j) == KILLED);
+      }
+    }
+  }
+  destroy_game(game);
 
 
+  int number_game = 1000;
+  for (int i = 0; i < number_game; i++ ) {
+    game = new_game();
+    while (get_winner(game) == NO_PLAYER) {
+      bot_move(game);
+      bot_kill(game);
+      board temp_game_1 = copy_game(game);
+      board temp_game_2 = copy_game_eleve(game);
+      enum return_code result = get_winner(temp_game_1);
+      enum return_code result_assert = get_winner_eleve(temp_game_2);
+      destroy_game(temp_game_1);
+      destroy_game(temp_game_2);
+      assert(result == result_assert);
+    }
+    afficher_plateau(game);
+    destroy_game(game);
+  }
 
   
   /*
@@ -824,17 +888,26 @@ void approfondis(bool hex, bool portee)
   if (hex && portee) {
     
   }
+  //Check if destroy game work well
+  for (int i = 0; i < 5000000; i++) {
+    board create_game = new_game();
+    destroy_game(create_game);
+  }
+  assert(is_memory_usage_above_1GB() == false);
 }
 
 
 
 int main()
 {
+
+  srand(time(NULL));
   bool hex = true;
   bool portee = true;
   initial(hex, portee);
   approfondis(hex, portee);
   return 0;
 }
+
 
 
