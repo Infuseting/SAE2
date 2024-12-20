@@ -200,7 +200,7 @@ player get_winner_eleve(board game) {
     if (game->is_hex) {
         for (int i = -1; i < 2; i++) {
             for (int j = -1; j < 2; j++) {
-                int* tab = find_king_board(game, game->current);
+                int* tab = find_king_board_eleve(game, game->current);
                 if (tab[0] + i < 0 || tab[0] + i >= MAX_DIMENSION || tab[1] + j < 0 || tab[1] + j >= MAX_DIMENSION) {
                     continue;
                 }
@@ -212,7 +212,7 @@ player get_winner_eleve(board game) {
     } else {
         for (int i = -1; i < 2; i++) {
             for (int j = -1; j < 2; j++) {
-                int* tab = find_king_board(game, current_player(game));
+                int* tab = find_king_board_eleve(game, current_player(game));
                 if (tab[0] + i < 0 || tab[0] + i >= NB_LINES || tab[1] + j < 0 || tab[1] + j >= NB_COLS) {
                     continue;
                 }
@@ -240,7 +240,7 @@ enum return_code move_toward_eleve(board game, direction d) {
         case SE: line = 1; column = 1; break;
         default: break;
     }
-    int* tab = find_king_board(game, game->current);
+    int* tab = find_king_board_eleve(game, game->current);
     int new_line = tab[0] + line, new_col = tab[1] + column;
     if (new_line < 0 || new_line >= (game->is_hex ? MAX_DIMENSION : NB_LINES) || new_col < 0 || new_col >= (game->is_hex ? MAX_DIMENSION : NB_COLS) || game->cells[new_line][new_col] == KILLED) return OUT;
     if (game->cells[new_line][new_col] != EMPTY) return BUSY;
@@ -254,7 +254,7 @@ enum return_code kill_cell_eleve(board game, int line, int column) {
     if (game->turn == MOVE) {
         return RULES;
     }
-    int* tab = find_king_board(game, game->current);
+    int* tab = find_king_board_eleve(game, game->current);
     if (game->is_hex) {
         if (line < 0 || line >= MAX_DIMENSION || column < 0 || column >= MAX_DIMENSION) {
             return OUT;
@@ -272,7 +272,7 @@ enum return_code kill_cell_eleve(board game, int line, int column) {
         ( game->cells[line][column] == SOUTH_KING)) {
         return BUSY;
     }
-    if (game->use_range && distance(game, tab[0], tab[1], line, column) > KING_RANGE) {
+    if (game->use_range && distance_eleve(game, tab[0], tab[1], line, column) > KING_RANGE) {
         return RULES;
     }    
     game->cells[line][column] = KILLED;
