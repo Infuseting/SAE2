@@ -194,31 +194,16 @@ cell get_content(board game, int line, int column) {
     }
     return game->cells[line][column];
 }
-
-// ...existing code...
 player get_winner(board game) {
-    if (game->is_hex) {
-        for (int i = -1; i < 2; i++) {
-            for (int j = -1; j < 2; j++) {
-                int* tab = find_king_board(game, game->current);
-                if (tab[0] + i < 0 || tab[0] + i >= MAX_DIMENSION || tab[1] + j < 0 || tab[1] + j >= MAX_DIMENSION) {
-                    continue;
-                }
-                if (game->cells[tab[0] + i][tab[1] + j] == EMPTY && !(i == 0 && j == 0) && !(i == -1 && j == 1) && !(i == 1 && j == -1)) {
-                    return NO_PLAYER;
-                }
+    int* tab = find_king_board(game, current_player(game));
+    int max_dim = game->is_hex ? MAX_DIMENSION : NB_LINES;
+    for (int i = -1; i < 2; i++) {
+        for (int j = -1; j < 2; j++) {
+            if (tab[0] + i < 0 || tab[0] + i >= max_dim || tab[1] + j < 0 || tab[1] + j >= max_dim) {
+                continue;
             }
-        }
-    } else {
-        for (int i = -1; i < 2; i++) {
-            for (int j = -1; j < 2; j++) {
-                int* tab = find_king_board(game, current_player(game));
-                if (tab[0] + i < 0 || tab[0] + i >= NB_LINES || tab[1] + j < 0 || tab[1] + j >= NB_COLS) {
-                    continue;
-                }
-                if (game->cells[tab[0] + i][tab[1] + j] == EMPTY) {
-                    return NO_PLAYER;
-                }
+            if (game->cells[tab[0] + i][tab[1] + j] == EMPTY && !(game->is_hex && ((i == -1 && j == 1) || (i == 1 && j == -1)))) {
+                return NO_PLAYER;
             }
         }
     }
