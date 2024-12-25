@@ -49,7 +49,7 @@ int distance(board game, int x1, int y1, int x2, int y2)
     
     for (int i = 0; i < MAX_DIMENSION; i++) {
         for (int j = 0; j < MAX_DIMENSION; j++) {
-            if (get_content(game, i, j) == KILLED) {
+            if (get_content(game, i, j) == KILLED || get_content(game, i, j) == NORTH_KING || get_content(game, i, j) == SOUTH_KING) {
                 tab[i][j] = -1;
             } else {
                 tab[i][j] = 10000;
@@ -92,8 +92,8 @@ int distance(board game, int x1, int y1, int x2, int y2)
 
         value++;
     }
-    //printf("\n\n\n");
-    //affiche_tab(tab);
+    printf("\n\n\n");
+    affiche_tab(tab);
     return tab[x2][y2];
 
 }
@@ -223,7 +223,7 @@ enum return_code move_toward(board game, direction d) {
         case SW: line = 1; column = game->is_hex ? 0 : -1; break;
         case S: if (!game->is_hex) line = 1; else return RULES; break;
         case SE: line = 1; column = 1; break;
-        default: break;
+        default: return RULES;
     }
     int* tab = find_king_board(game, game->current);
     int new_line = tab[0] + line, new_col = tab[1] + column;

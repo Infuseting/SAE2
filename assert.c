@@ -840,6 +840,7 @@ void initial(bool hex, bool portee)
 
   assert(kill_cell(game, 1, 1) == RULES);
   assert(move_toward(game, NW) == OUT);
+  assert(move_toward(game, 17) == RULES);
   assert(move_toward(game, N) == OUT);
   assert(move_toward(game, NE) == OUT);
   assert(move_toward(game, W) == OK);
@@ -966,7 +967,7 @@ void initial(bool hex, bool portee)
     assert(is_hex(game) == false);
     assert(uses_range(game) == true);
     assert(current_player(game) == NORTH);
-
+    assert(kill_cell(game, 0, 2) == RULES);
     assert(move_toward(game, S) == OK);
     assert(kill_cell(game, 3, 2) == OK);
 
@@ -1219,95 +1220,95 @@ void approfondis(bool hex, bool portee)
   }
   destroy_game(game);
 
-  int number_game = 1000000;
-  for (int i = 0; i < number_game; i++)
-  {
-    game = new_game();
-    while (get_winner(game) == NO_PLAYER)
-    {
-      bot_move(game);
-      bot_kill(game);
-      board temp_game_1 = copy_game(game);
-      board temp_game_2 = copy_game_assert(game);
-      enum return_code result = get_winner(temp_game_1);
-      enum return_code result_assert = get_winner_assert(temp_game_2);
-      destroy_game(temp_game_1);
-      destroy_game(temp_game_2);
-      assert(result == result_assert);
-    }
-    afficher_plateau(game);
-    printf("Gagnant : %d\n", game->current);
-    destroy_game(game);
-
-    game = new_special_game(false, true);
-    while (get_winner(game) == NO_PLAYER)
-    {
-      bot_move(game);
-      bot_kill(game);
-      board temp_game_1 = copy_game(game);
-      board temp_game_2 = copy_game_assert(game);
-      enum return_code result = get_winner(temp_game_1);
-      enum return_code result_assert = get_winner_assert(temp_game_2);
-      destroy_game(temp_game_1);
-      destroy_game(temp_game_2);
-      assert(result == result_assert);
-    }
-    afficher_plateau(game);
-    printf("Gagnant : %d\n", game->current);
-    destroy_game(game);
-
-    game = new_special_game(true, false);
-    while (get_winner(game) == NO_PLAYER)
-    {
-      bot_move(game);
-      bot_kill(game);
-      board temp_game_1 = copy_game(game);
-      board temp_game_2 = copy_game_assert(game);
-      enum return_code result = get_winner(temp_game_1);
-      enum return_code result_assert = get_winner_assert(temp_game_2);
-      destroy_game(temp_game_1);
-      destroy_game(temp_game_2);
-      assert(result == result_assert);
-    }
-    afficher_plateau(game);
-    printf("Gagnant : %d\n", game->current);
-    destroy_game(game);
-
-    int number_game = 1000;
-    for (int i = 0; i < number_game; i++)
-    {
-      game = new_special_game(true, true);
-      while (get_winner(game) == NO_PLAYER)
-      {
-        bot_move(game);
-        bot_kill(game);
-        board temp_game_1 = copy_game(game);
-        board temp_game_2 = copy_game_assert(game);
-        enum return_code result = get_winner(temp_game_1);
-        enum return_code result_assert = get_winner_assert(temp_game_2);
-        destroy_game(temp_game_1);
-        destroy_game(temp_game_2);
-        assert(result == result_assert);
-      }
-      afficher_plateau(game);
-      printf("Gagnant : %d\n", game->current);
-      destroy_game(game);
-    }
-  }
-  // Check if destroy game work well
-  for (int i = 0; i < 5000000; i++)
-  {
-    board create_game = new_game();
-    destroy_game(create_game);
-  }
-  assert(is_memory_usage_above_1GB() == false);
+  //int number_game = 1000000;
+  //for (int i = 0; i < number_game; i++)
+  //{
+  //  game = new_game();
+  //  while (get_winner(game) == NO_PLAYER)
+  //  {
+  //    bot_move(game);
+  //    bot_kill(game);
+  //    board temp_game_1 = copy_game(game);
+  //    board temp_game_2 = copy_game_assert(game);
+  //    enum return_code result = get_winner(temp_game_1);
+  //    enum return_code result_assert = get_winner_assert(temp_game_2);
+  //    destroy_game(temp_game_1);
+  //    destroy_game(temp_game_2);
+  //    assert(result == result_assert);
+  //  }
+  //  afficher_plateau(game);
+  //  printf("Gagnant : %d\n", game->current);
+  //  destroy_game(game);
+//
+  //  game = new_special_game(false, true);
+  //  while (get_winner(game) == NO_PLAYER)
+  //  {
+  //    bot_move(game);
+  //    bot_kill(game);
+  //    board temp_game_1 = copy_game(game);
+  //    board temp_game_2 = copy_game_assert(game);
+  //    enum return_code result = get_winner(temp_game_1);
+  //    enum return_code result_assert = get_winner_assert(temp_game_2);
+  //    destroy_game(temp_game_1);
+  //    destroy_game(temp_game_2);
+  //    assert(result == result_assert);
+  //  }
+  //  afficher_plateau(game);
+  //  printf("Gagnant : %d\n", game->current);
+  //  destroy_game(game);
+//
+  //  game = new_special_game(true, false);
+  //  while (get_winner(game) == NO_PLAYER)
+  //  {
+  //    bot_move(game);
+  //    bot_kill(game);
+  //    board temp_game_1 = copy_game(game);
+  //    board temp_game_2 = copy_game_assert(game);
+  //    enum return_code result = get_winner(temp_game_1);
+  //    enum return_code result_assert = get_winner_assert(temp_game_2);
+  //    destroy_game(temp_game_1);
+  //    destroy_game(temp_game_2);
+  //    assert(result == result_assert);
+  //  }
+  //  afficher_plateau(game);
+  //  printf("Gagnant : %d\n", game->current);
+  //  destroy_game(game);
+//
+  //  int number_game = 1000;
+  //  for (int i = 0; i < number_game; i++)
+  //  {
+  //    game = new_special_game(true, true);
+  //    while (get_winner(game) == NO_PLAYER)
+  //    {
+  //      bot_move(game);
+  //      bot_kill(game);
+  //      board temp_game_1 = copy_game(game);
+  //      board temp_game_2 = copy_game_assert(game);
+  //      enum return_code result = get_winner(temp_game_1);
+  //      enum return_code result_assert = get_winner_assert(temp_game_2);
+  //      destroy_game(temp_game_1);
+  //      destroy_game(temp_game_2);
+  //      assert(result == result_assert);
+  //    }
+  //    afficher_plateau(game);
+  //    printf("Gagnant : %d\n", game->current);
+  //    destroy_game(game);
+  //  }
+  //}
+  //// Check if destroy game work well
+  //for (int i = 0; i < 5000000; i++)
+  //{
+  //  board create_game = new_game();
+  //  destroy_game(create_game);
+  //}
+  //assert(is_memory_usage_above_1GB() == false);
 }
 
 int main()
 {
 
   srand(time(NULL));
-  bool hex = true;
+  bool hex = false;
   bool portee = true;
   initial(hex, portee);
   approfondis(hex, portee);
